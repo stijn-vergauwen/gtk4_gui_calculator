@@ -1,5 +1,10 @@
 use gtk4::prelude::*;
 use gtk4::{Application, ApplicationWindow, Button, Grid, Label, Orientation};
+use gui_calculator::calculator_app::actions::handle_action;
+
+use self::buttons::get_buttons_for_calculator;
+
+mod buttons;
 
 pub fn build_ui(application: &Application) {
     let grid = Grid::new();
@@ -24,15 +29,17 @@ pub fn build_ui(application: &Application) {
 }
 
 pub fn add_buttons_to_grid(grid: &Grid) {
-    let buttons = [
-        "7", "8", "9", "/", "4", "5", "6", "*", "1", "2", "3", "-", "0", ".", "=", "+",
-    ];
+    let buttons = get_buttons_for_calculator();
 
-    for (index, label) in buttons.iter().enumerate() {
+    for (index, button) in buttons.iter().enumerate() {
         let column = (index % 4) as i32;
         let row = f64::floor(index as f64 / 4f64) as i32 + 1;
 
-        let button = Button::with_label(label);
-        grid.attach(&button, column, row, 1, 1);
+        let action = button.action.clone();
+
+        let button_object = Button::with_label(&button.label);
+        button_object.connect_clicked(move |_| handle_action(action));
+
+        grid.attach(&button_object, column, row, 1, 1);
     }
 }
