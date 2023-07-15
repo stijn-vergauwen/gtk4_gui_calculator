@@ -1,4 +1,4 @@
-use gui_calculator::calculator_app::actions::{CalculatorAction, Operator};
+use gui_calculator::calculator_app::actions::{CalculatorAction, Operation};
 
 pub struct CalculatorButton {
     pub label: String,
@@ -12,24 +12,25 @@ impl CalculatorButton {
 }
 
 pub fn get_buttons_for_calculator() -> [CalculatorButton; 16] {
+    use CalculatorAction::*;
     let new = |label, action| CalculatorButton::new(String::from(label), action);
 
     [
-        new("7", CalculatorAction::Digit(7)),
-        new("8", CalculatorAction::Digit(8)),
-        new("9", CalculatorAction::Digit(9)),
-        new("/", CalculatorAction::Operator(Operator::Divide)),
-        new("4", CalculatorAction::Digit(4)),
-        new("5", CalculatorAction::Digit(5)),
-        new("6", CalculatorAction::Digit(6)),
-        new("*", CalculatorAction::Operator(Operator::Multiply)),
-        new("1", CalculatorAction::Digit(1)),
-        new("2", CalculatorAction::Digit(2)),
-        new("3", CalculatorAction::Digit(3)),
-        new("-", CalculatorAction::Operator(Operator::Subtract)),
-        new("0", CalculatorAction::Digit(0)),
-        new(".", CalculatorAction::Decimal),
-        new("=", CalculatorAction::Equals),
-        new("+", CalculatorAction::Operator(Operator::Add)),
+        new("7", Digit(7)),
+        new("8", Digit(8)),
+        new("9", Digit(9)),
+        new("/", Operator(Operation::Divide)),
+        new("4", Digit(4)),
+        new("5", Digit(5)),
+        new("6", Digit(6)),
+        new("*", Operator(Operation::Multiply)),
+        new("1", Digit(1)),
+        new("2", Digit(2)),
+        new("3", Digit(3)),
+        new("-", Operator(Operation::Subtract)),
+        new("0", Digit(0)),
+        new(".", Decimal),
+        new("=", Equals),
+        new("+", Operator(Operation::Add)),
     ]
 }

@@ -1,5 +1,10 @@
+use std::cell::RefCell;
+use std::rc::Rc;
+
 use gtk4::prelude::*;
 use gtk4::Application;
+use gtk4::Label;
+use gui_calculator::calculator_app::Calculator;
 
 mod gui;
 
@@ -10,8 +15,11 @@ fn main() {
         .application_id(APPLICATION_ID)
         .build();
 
+    
     application.connect_activate(|app| {
-        gui::build_ui(&app);
+        let display_label = Rc::new(Label::new(None));
+        let calculator = Rc::new(RefCell::new(Calculator::new(display_label)));
+        gui::build_ui(&app, calculator.clone());
     });
 
     application.run();
