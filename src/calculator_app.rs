@@ -1,6 +1,6 @@
 use std::{cell::RefCell, rc::Rc};
 
-use self::actions::{enter_digit, CalculatorAction, Operation};
+use self::actions::{enter_digit, CalculatorAction, Operation, select_operator, calculate_result};
 use gtk4::Label;
 
 pub mod actions;
@@ -26,6 +26,7 @@ impl Calculator {
     }
 }
 
+#[derive(Clone, Copy)]
 struct Calculation {
     left: Option<f64>,
     right: Option<f64>,
@@ -57,19 +58,23 @@ impl Calculation {
 
         format!("{left} {operation} {right}")
     }
+
+    fn has_empty_fields(&self) -> bool {
+        self.left == None || self.right == None || self.operation == None
+    }
 }
 
 pub fn handle_input(calculator: Rc<RefCell<Calculator>>, action: CalculatorAction) {
     match action {
-        CalculatorAction::Digit(digit) => println!("Enter digit"),
+        CalculatorAction::Digit(digit) => enter_digit(&mut calculator.borrow_mut(), digit),
         CalculatorAction::Decimal => println!("display decimal"),
-        CalculatorAction::Operator(_) => println!("do operator"),
-        CalculatorAction::Equals => println!("calculate result"),
+        CalculatorAction::Operator(operator) => select_operator(&mut calculator.borrow_mut(), operator),
+        CalculatorAction::Equals => calculate_result(&mut calculator.borrow_mut()),
     }
 
-    // refresh_display(calculator)
+    refresh_display(&calculator.borrow());
 }
 
-// fn refresh_display(calculator: &Calculator) {
-//     todo!();
-// }
+fn refresh_display(calculator: &Calculator) {
+    calculator.display.set_text(&calculator.current_calculation.to_text());
+}
