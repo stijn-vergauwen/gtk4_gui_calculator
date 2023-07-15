@@ -1,6 +1,6 @@
 use std::{cell::RefCell, rc::Rc};
 
-use self::actions::{enter_digit, CalculatorAction, Operation, select_operator, calculate_result};
+use self::actions::{enter_digit, CalculatorAction, Operation, select_operator, calculate_result, enter_decimal};
 use gtk4::Label;
 
 pub mod actions;
@@ -8,6 +8,7 @@ pub mod actions;
 pub struct Calculator {
     current_calculation: Calculation,
     prev_calculation: Calculation,
+    add_decimal_on_next_digit: bool,
 
     display: Rc<Label>,
 }
@@ -17,6 +18,7 @@ impl Calculator {
         Calculator {
             current_calculation: Calculation::new(),
             prev_calculation: Calculation::new(),
+            add_decimal_on_next_digit: false,
             display,
         }
     }
@@ -67,7 +69,7 @@ impl Calculation {
 pub fn handle_input(calculator: Rc<RefCell<Calculator>>, action: CalculatorAction) {
     match action {
         CalculatorAction::Digit(digit) => enter_digit(&mut calculator.borrow_mut(), digit),
-        CalculatorAction::Decimal => println!("display decimal"),
+        CalculatorAction::Decimal => enter_decimal(&mut calculator.borrow_mut()),
         CalculatorAction::Operator(operator) => select_operator(&mut calculator.borrow_mut(), operator),
         CalculatorAction::Equals => calculate_result(&mut calculator.borrow_mut()),
     }
