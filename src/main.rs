@@ -17,8 +17,9 @@ fn main() {
 
     
     application.connect_activate(|app| {
-        let display_label = Rc::new(Label::new(None));
-        let calculator = Rc::new(RefCell::new(Calculator::new(display_label)));
+        let top_display = Rc::new(Label::new(None));
+        let bottom_display = Rc::new(Label::new(None));
+        let calculator = Rc::new(RefCell::new(Calculator::new(bottom_display, top_display)));
         gui::build_ui(&app, calculator.clone());
     });
 

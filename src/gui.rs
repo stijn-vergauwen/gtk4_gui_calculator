@@ -15,7 +15,15 @@ pub fn build_ui(application: &Application, calculator: Rc<RefCell<Calculator>>) 
     grid.set_column_homogeneous(true);
     grid.set_orientation(Orientation::Vertical);
 
-    grid.attach(calculator.borrow().get_display().as_ref(), 0, 0, 4, 1);
+    grid.attach(calculator.borrow().get_prev_display().as_ref(), 0, 0, 4, 1);
+
+    grid.attach(
+        calculator.borrow().get_current_display().as_ref(),
+        0,
+        1,
+        4,
+        1,
+    );
 
     add_buttons_to_grid(&grid, calculator);
 
@@ -35,7 +43,7 @@ pub fn add_buttons_to_grid(grid: &Grid, calculator: Rc<RefCell<Calculator>>) {
 
     for (index, button) in buttons.iter().enumerate() {
         let column = (index % 4) as i32;
-        let row = f64::floor(index as f64 / 4f64) as i32 + 1;
+        let row = f64::floor(index as f64 / 4f64) as i32 + 2;
 
         let action = button.action.clone();
 

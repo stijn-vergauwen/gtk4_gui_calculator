@@ -1,6 +1,8 @@
 use std::{cell::RefCell, rc::Rc};
 
-use self::actions::{enter_digit, CalculatorAction, Operation, select_operator, calculate_result, enter_decimal};
+use self::actions::{
+    calculate_result, enter_decimal, enter_digit, select_operator, CalculatorAction, Operation,
+};
 use gtk4::Label;
 
 pub mod actions;
@@ -10,21 +12,27 @@ pub struct Calculator {
     prev_calculation: Calculation,
     add_decimal_on_next_digit: bool,
 
-    display: Rc<Label>,
+    current_display: Rc<Label>,
+    prev_display: Rc<Label>,
 }
 
 impl Calculator {
-    pub fn new(display: Rc<Label>) -> Self {
+    pub fn new(current_display: Rc<Label>, prev_display: Rc<Label>) -> Self {
         Calculator {
             current_calculation: Calculation::new(),
             prev_calculation: Calculation::new(),
             add_decimal_on_next_digit: false,
-            display,
+            current_display,
+            prev_display,
         }
     }
 
-    pub fn get_display(&self) -> Rc<Label> {
-        self.display.clone()
+    pub fn get_current_display(&self) -> Rc<Label> {
+        self.current_display.clone()
+    }
+
+    pub fn get_prev_display(&self) -> Rc<Label> {
+        self.prev_display.clone()
     }
 }
 
@@ -70,7 +78,9 @@ pub fn handle_input(calculator: Rc<RefCell<Calculator>>, action: CalculatorActio
     match action {
         CalculatorAction::Digit(digit) => enter_digit(&mut calculator.borrow_mut(), digit),
         CalculatorAction::Decimal => enter_decimal(&mut calculator.borrow_mut()),
-        CalculatorAction::Operator(operator) => select_operator(&mut calculator.borrow_mut(), operator),
+        CalculatorAction::Operator(operator) => {
+            select_operator(&mut calculator.borrow_mut(), operator)
+        }
         CalculatorAction::Equals => calculate_result(&mut calculator.borrow_mut()),
     }
 
@@ -78,5 +88,11 @@ pub fn handle_input(calculator: Rc<RefCell<Calculator>>, action: CalculatorActio
 }
 
 fn refresh_display(calculator: &Calculator) {
-    calculator.display.set_text(&calculator.current_calculation.to_text());
+    calculator
+        .current_display
+        .set_text(&calculator.current_calculation.to_text());
+
+    calculator
+        .prev_display
+        .set_text(&calculator.prev_calculation.to_text());
 }
